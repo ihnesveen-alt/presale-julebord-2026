@@ -1,16 +1,16 @@
-PRESALE JULEBORD 2026 – publisering og RSVP
+PRESALE JULEBORD 2026 — DELT GJESTELISTE
 
-1. Mottakeradresse er allerede satt til ihne.millehaugen@loyalty.no.
-2. Kontroller at dette er riktig mottaker.
-3. Last opp index.html via https://app.netlify.com/drop (dra filen eller mappen inn). Netlify gir deg en offentlig lenke som du kan dele.
-4. Send inn en testpåmelding. FormSubmit sender en aktiveringsmelding til e-postadressen første gang. Godkjenn/aktiver skjemaet via e-posten før dere deler lenken.
-5. Test skjemaet på mobil og sjekk at e-poster kommer frem. Kontroller også spamfilter.
+Denne versjonen bruker Netlify Functions + Netlify Blobs. FormSubmit brukes IKKE.
 
-VIKTIG:
-- En RSVP er interesseregistrering, ikke billett/bekreftet plass.
-- FormSubmit videresender påmeldinger på e-post. For oversikt i regneark kan dere eventuelt bruke Google Forms/Tally i stedet.
-- Oppgi hvem som er behandlingsansvarlig og legg til lenke til personvernerklæring før offentlig lansering. Samle bare nødvendige opplysninger, og slett dem når de ikke lenger trengs.
-- Ikke del innkommende RSVP-e-poster offentlig.
-- En offentlig URL kan ikke opprettes direkte fra denne filpakken; dere må publisere på en hostingtjeneste.
+PUBLISERING (VIKTIG):
+1. Netlify Drop / opplasting av bare HTML/ZIP er IKKE nok for denne løsningen.
+2. Last opp hele prosjektet til et GitHub-repository (index.html, package.json, netlify.toml og netlify/functions/guests.mjs).
+3. I Netlify: eksisterende nettsted julebordpresale -> Project configuration / Build & deploy -> koble repository for kontinuerlig deploy. Kontroller publish directory = . og functions directory = netlify/functions.
+4. Under Site configuration -> Environment variables: legg til ADMIN_PASSWORD med et langt, unikt passord. Start ny deploy etterpå. Ikke legg passordet i HTML eller GitHub.
+5. Test /.netlify/functions/guests (skal vise {"guests":[]}) og send en RSVP. Se at navnet vises på en annen enhet.
+6. Netlify Blobs lagrer påmeldingene på serveren. Public API viser bare navn og status; e-post og allergier returneres ikke.
 
-Allergier og matbehov: Skjemaet spør nå om allergier i stedet for antall personer. Allergiopplysninger kan være helseopplysninger og krever særlig varsom håndtering. Avklar personvern, tilgang og sletting før publisering.
+VIKTIG PERSONVERN:
+Alle med lenken kan se navn og RSVP-status. Gjester må aktivt godta dette. E-post og allergier lagres i samme private serverlager, men blir aldri sendt til nettleseren via den offentlige gjestelisten. Administratorgrensesnittet kan legge til inviterte, men har ikke en egen visning av allergier; avtal separat trygg tilgang til matbehov før dere bruker dem. Ingen automatisk e-postvarsling er satt opp. Slett opplysninger etter arrangementet og lag en personvernerklæring med ansvarlig arrangør og kontaktadresse før offentlig lansering.
+
+MERK: "Invitert" legges til av arrangør via passord. Gjester kan svare "Skal" eller "Kommer ikke". Statusene er separate oppføringer; dette er ikke et komplett invitasjons-/oppfølgingssystem som kobler gjestens svar til en forhåndsopprettet invitasjon.
