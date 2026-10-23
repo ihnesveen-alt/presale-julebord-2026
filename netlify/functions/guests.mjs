@@ -6,8 +6,23 @@ export default async (request)=>{
  try{
   const db=store();
   if(request.method==='GET'){
-   const all=[];let cursor;
-   do{const page=await db.list({prefix:'guest/',paginate:true,cursor});for(const item of page.blobs){const g=await db.get(item.key,{type:'json'});if(g&&g.name&&['skal','invitert','kommer-ikke'].includes(g.status))all.push({name:g.name,status:g.status})}cursor=page.cursor}while(cursor);
+   const all=[];
+   // Netlify Blobs may return an async iterable when listing with pagination.
+   const listing=await db.list({prefix:'guest/',paginate:true});
+   const entries=[];
+   const collect=(part)=>{
+    if(!part)return;
+    if(Array.isArray(part))entries.push(...part);
+    else if(Array.isArray(part.blobs))entries.push(...part.blobs);
+    else if(part.key)entries.push(part);
+   };
+   if(listing && typeof listing[Symbol.asyncIterator]==='function'){
+    for await(const part of listing)collect(part);
+   }else collect(listing);
+   for(const item of entries){
+    const g=await db.get(item.key,{type:'json'});
+    if(g&&g.name&&['skal','invitert','kommer-ikke'].includes(g.status))all.push({name:g.name,status:g.status});
+   }
    return json({guests:all.sort((a,b)=>a.name.localeCompare(b.name,'no'))});
   }
   if(request.method!=='POST')return json({error:'Metode ikke tillatt'},405);
